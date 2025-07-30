@@ -1,29 +1,75 @@
-# Read Me First
-The following was discovered as part of building this project:
+## 🟢 GreetingController
 
-* The original package name 'com.example.springboot-fundamentals' is invalid and this project uses 'com.example.springboot_fundamentals' instead.
+- A simple controller that returns a greeting message.
+- Endpoint: `GET /`
+- Response: `"Hello, SpringBoot!"`
 
-# Getting Started
+![GreetingController](https://github.com/user-attachments/assets/d8e56b1c-c15d-4a83-9607-c09ad2a17e7a)
 
-### Reference Documentation
-For further reference, please consider the following sections:
+---
 
-* [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
-* [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/3.5.4/maven-plugin)
-* [Create an OCI image](https://docs.spring.io/spring-boot/3.5.4/maven-plugin/build-image.html)
-* [Spring Web](https://docs.spring.io/spring-boot/3.5.4/reference/web/servlet.html)
+## 🔧 Exclude DataSource Auto Configuration
 
-### Guides
-The following guides illustrate how to use some features concretely:
+- When using:
+  ```java
+  @SpringBootApplication(exclude = { DataSourceAutoConfiguration.class })
+  ```
+  Spring Boot will **not try to auto-configure a datasource** (like H2).
+- This is useful if your application doesn't require a database.
 
-* [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
-* [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
-* [Building REST services with Spring](https://spring.io/guides/tutorials/rest/)
+- Updated `Main.java`:
 
-### Maven Parent overrides
+![Main.java](https://github.com/user-attachments/assets/d901ecf9-ca76-44d4-ac39-d228fa5d951e)
 
-Due to Maven's design, elements are inherited from the parent POM to the project POM.
-While most of the inheritance is fine, it also inherits unwanted elements like `<license>` and `<developers>` from the parent.
-To prevent this, the project POM contains empty overrides for these elements.
-If you manually switch to a different parent and actually want the inheritance, you need to remove those overrides.
+---
 
+## ⚙️ Configuration Properties with Profiles
+
+- Added `application.properties`:
+
+  ```properties
+  app.title=Default Title
+  ```
+
+- Added `application-dev.yml`:
+
+  ```yaml
+  app:
+    title: Dev Title
+  ```
+
+- Created an endpoint to fetch the configured title value.
+
+![application.properties](https://github.com/user-attachments/assets/f60e0844-c0b5-4191-8287-4e2af6cf9f24)
+![GetTitle endpoint](https://github.com/user-attachments/assets/f58645f8-135a-4698-9396-267d1d2fda59)
+
+---
+
+## 🕒 TimeService Interface and Implementations
+
+- Created an interface `TimeService`.
+- Two implementations:
+
+  - `SystemTimeService` (uses current system time)
+  - `MockTimeService` (returns fixed/mock time)
+
+- ✅ Spring will throw an error if multiple beans implement an interface **unless**:
+
+  - You mark one with `@Primary`
+  - Or specify a `@Qualifier`
+
+- In this case:
+  - `@Primary` was used on `SystemTimeService`
+  - `@Qualifier("mock")` used in controller to specify the mock implementation
+
+---
+
+## 🔹 TimeController
+
+- Injects `TimeService` using constructor injection.
+- Uses `MockTimeService` explicitly with `@Qualifier`.
+
+![TimeController](https://github.com/user-attachments/assets/e779cd26-538a-472b-ad17-37ccc939f374)
+![GetTime endpoint](https://github.com/user-attachments/assets/6b85d0a3-315f-43f9-bfd9-143bd40eb868)
+
+---
